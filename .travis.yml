@@ -14,18 +14,19 @@ cache:
 env:
  global:
  - ANDROID_API=28
- - EMULATOR_API=23
+ - EMULATOR_API=21
  - ANDROID_BUILD_TOOLS=27.0.3
  - ANDROID_ABI=armeabi-v7a
  - ANDROID_TAG=google_apis
  - ADB_INSTALL_TIMEOUT=10 # minutes
+ - QEMU_AUDIO_DRV=none
 
 addons:
   apt_packages:
     - pandoc
 
- notifications:
-    slack: "mavionics:"$SLACK_KEY
+ #notifications:
+  #  slack: "mavionics:"$SLACK_KEY
 
 android:
   components:
@@ -53,15 +54,13 @@ install:
   - echo y | sdkmanager "cmake;3.6.4111459"
   - echo y | sdkmanager "lldb;3.1"
 
-script:
-  - ./gradlew clean build
-
-after_script:
+before_script:
   # Create and start emulator
   - echo no | android create avd --force -n test -t "android-"$EMULATOR_API --abi $ANDROID_ABI --tag $ANDROID_TAG
   - emulator -avd test -no-skin -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
 
-  - ./gradlew connectedCheck --profile
+script:
+  - ./gradlew clean build connectedCheck --profile
   - pandoc `ls -1rt build/reports/profile/profile-*.html | tail -n1` -t plain
