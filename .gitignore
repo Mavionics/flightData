@@ -63,3 +63,18 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
+
+# default gitignore
+*.iml
+.gradle
+/local.properties
+*.iws
+.idea/libraries
+.idea/tasks.xml
+.idea/vcs.xml
+.idea/workspace.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+
