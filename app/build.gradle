@@ -8,7 +8,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.github.mavionics.fligt_data"
-        minSdkVersion 24
+        minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -18,6 +18,9 @@ android {
                 cppFlags "-std=c++14 -frtti -fexceptions"
             }
         }
+    }
+    lintOptions {
+    abortOnError false
     }
     buildTypes {
         release {
