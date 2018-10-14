@@ -2,24 +2,14 @@ language: android
 sudo: required
 jdk: oraclejdk8
 
-before_cache:
- - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
- - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-
-cache:
- directories:
- - $HOME/.gradle/caches/
- - $HOME/.gradle/wrapper/
-
 env:
  global:
  - ANDROID_API=28
- - EMULATOR_API=21
+ - EMULATOR_API=23
  - ANDROID_BUILD_TOOLS=27.0.3
  - ANDROID_ABI=armeabi-v7a
  - ANDROID_TAG=google_apis
  - ADB_INSTALL_TIMEOUT=10 # minutes
- - QEMU_AUDIO_DRV=none
 
 addons:
   apt_packages:
@@ -44,6 +34,16 @@ android:
     - 'android-sdk-preview-license-52d11cd2'
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
+
+before_cache:
+ - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+ - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+ directories:
+ - $HOME/.gradle/caches/
+ - $HOME/.gradle/wrapper/
+
 before_install:
   - mkdir -p $ANDROID_HOME/licenses
   - echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > $ANDROID_HOME/licenses/android-sdk-license
@@ -56,11 +56,11 @@ install:
 
 before_script:
   # Create and start emulator
-  - echo no | android create avd --force -n test -t "android-"$EMULATOR_API --abi $ANDROID_ABI --tag $ANDROID_TAG
-  - emulator -avd test -no-skin -no-audio -no-window &
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
+  #- echo no | android create avd --force -n test -t "android-"$EMULATOR_API --abi $ANDROID_ABI --tag $ANDROID_TAG
+  #- emulator -avd test -no-skin -no-audio -no-window &
+  #- android-wait-for-emulator
+  #- adb shell input keyevent 82 &
 
 script:
-  - ./gradlew clean build connectedCheck --profile
+  - ./gradlew clean build -PdisablePreDex --continue --stacktrace --profile
   - pandoc `ls -1rt build/reports/profile/profile-*.html | tail -n1` -t plain
