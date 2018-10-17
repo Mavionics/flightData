@@ -1,6 +1,7 @@
 # Secrets shouldn't be pushed to github
 keystore.jks
 keystore.properties
+keystore.tar
 
 # Built application files
 *.apk
