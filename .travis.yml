@@ -52,6 +52,7 @@ install:
 - echo y | sdkmanager "ndk-bundle"
 - echo y | sdkmanager "cmake;3.6.4111459"
 - echo y | sdkmanager "lldb;3.1"
+- pip install mkdocs
 before_script:
   - echo "y" | android update sdk -a --no-ui --filter "android-"$EMULATOR_API
   - echo "y" | android update sdk -a --no-ui --filter "sys-img-armeabi-v7a-android-"$EMULATOR_API
@@ -63,14 +64,27 @@ before_script:
 script:
 - "./gradlew clean build connectedCheck -PdisablePreDex
   --continue --stacktrace --profile"
+- mkdocs build --verbose --clean --strict
 - pandoc `ls -1rt build/reports/profile/profile-*.html | tail -n1` -t plain
 deploy:
+  # Deploy app
   provider: releases
   file: app/build/outputs/apk/release/app-release.apk
   skip_cleanup: true
   on:
+    branch: master
     repo: Mavionics/flightData
     tags: true
     jdk: oraclejdk8
+  api-key:
+    secure: kn7lsjnZXllPIom4oPgRX7FQPlPmlNMNTQaP26qqqfxDN0eL9IyBFGdU460zvvtXWSHpHwrkNBOeXy9WE0RodC4vEUEb0jNNa76TgIJgaupB0BCdmXbFfDYksFw9YR16ggWax5Fn65QSkMAxjFZRi9erwLBT4rW9P0N5dI00+BGn4byAIMS1P5QoKyC/eupry6GT+J9QM+UtbK0RnLetX75Ac1D+GqclQ7Yteydzj4Ipb+6QqaGGwQcSXUbrnIMyUnJhll0SuYpS06DVZRCzyGgDz+6dbTGAd3jeJ7vle7rgbPYllQGbXpnIu813M8G9U9MlsMkiGIoQhMjw3vSiWBJNGB/CaYxOXAHjA0+smq2gIDt5NgVoO7ga86i0BKyf4Pzd6Jq1X2uPf2HlFBW3GkBQg3bMVdi/LWE1YqK85lNt0XVlmjrxLhR65FZWvSY5SCWlB9JbpSrJj0Y7dlK4ufuX9/h1ZXqi1f+m0iqMWvukjm1VdE5YeqNHHNHBwqZv2IvOUcg+vSgQnah1Xvquj+Yw3te6IX1aE/JEYLxendT7HY/qc6+s4h3ywXSqHLHiEc2uYuAK4QPsHB9Wzg7xO4pFxhK0zQa6gGQAPtoQAS5trP3eqiPiwVvMHBQJJTfj+M8Rjvqzdpbn4gSs9vfWHrYMFVDmc80lpQHa0Jpx9ss=
+  # Deploy mkdocs
+  provider: pages
+  skip_cleanup: true
+  local_dir: site
+  on:
+    branch: master
+    repo: Mavionics/flightData
+    tags: true
   api-key:
     secure: kn7lsjnZXllPIom4oPgRX7FQPlPmlNMNTQaP26qqqfxDN0eL9IyBFGdU460zvvtXWSHpHwrkNBOeXy9WE0RodC4vEUEb0jNNa76TgIJgaupB0BCdmXbFfDYksFw9YR16ggWax5Fn65QSkMAxjFZRi9erwLBT4rW9P0N5dI00+BGn4byAIMS1P5QoKyC/eupry6GT+J9QM+UtbK0RnLetX75Ac1D+GqclQ7Yteydzj4Ipb+6QqaGGwQcSXUbrnIMyUnJhll0SuYpS06DVZRCzyGgDz+6dbTGAd3jeJ7vle7rgbPYllQGbXpnIu813M8G9U9MlsMkiGIoQhMjw3vSiWBJNGB/CaYxOXAHjA0+smq2gIDt5NgVoO7ga86i0BKyf4Pzd6Jq1X2uPf2HlFBW3GkBQg3bMVdi/LWE1YqK85lNt0XVlmjrxLhR65FZWvSY5SCWlB9JbpSrJj0Y7dlK4ufuX9/h1ZXqi1f+m0iqMWvukjm1VdE5YeqNHHNHBwqZv2IvOUcg+vSgQnah1Xvquj+Yw3te6IX1aE/JEYLxendT7HY/qc6+s4h3ywXSqHLHiEc2uYuAK4QPsHB9Wzg7xO4pFxhK0zQa6gGQAPtoQAS5trP3eqiPiwVvMHBQJJTfj+M8Rjvqzdpbn4gSs9vfWHrYMFVDmc80lpQHa0Jpx9ss=
