@@ -1,0 +1,68 @@
+language: android
+sudo: required
+jdk: oraclejdk8
+env:
+  global:
+  - ANDROID_API=28
+  - EMULATOR_API=23
+  - ANDROID_BUILD_TOOLS=27.0.3
+  - ANDROID_ABI=armeabi-v7a
+  - ANDROID_TAG=google_apis
+  - ADB_INSTALL_TIMEOUT=10
+addons:
+  apt_packages:
+  - pandoc
+git:
+  submodules: false
+notifications:
+  slack:
+    secure: RaQO3+UJmOVn0k6fGMrrEWvSsbBY81ogY3izbOzNnX6/Ebm6apsi6juHrRajGRKZA4Qk556jGC3RhVT/+RcCx6DPoIP/YKXvWaQzRT+/nXlrWV+PEQ7feE2niAMoKQxpyZ0QaE6mJ06tXaomLV1orn1I9Z7E1JmyVAfJ4DsFgjrkcrTiHz1wDgjcJ/am2Q4dEDLH/mz3pxX/k25MVPw12WL7HKcdAiJzd+rcQn2duaNlmU1a0xfytrnbAK/op7VWx9qsSasDkzJBTZgwXjlL+Db67Jp2ZcngFYjJax46gSCUnJNVC5z8OczM0bjQTTZC1QryVLicIZhYDj34eRdp0Mhskzbn0jW7AuriMBb8+KhyL6BWTHd8sSPw5WSgr3Ypt+1FPqrZP/6WSeSt9dfUD3PhHPXxgY/zuwfKYUVhs1OS1jWQ/m2d2ZupTjQTfTUggsMCFQBaftYGgLckeOuFmGLFuJ95ZdAytkGiakO46ZBqcp5aLlla6OWmarYv66mBSltxAEN1xb0ViYzsZ866qM2Ucm+0vhLnbxEzR00lP30XKuzAEW+2OHMQtor0h9oMMAgHbViAdPwx7e5avvXMCAeCEH15ZuEJbNpZiJNOVvLcRIyg43zz+41z9VEd6+jkribOIfpnqYW4wqsogw/yCtw8AhxmintBvpi15N04uAo=
+android:
+  components:
+  - tools
+  - platform-tools
+  - tools
+  - build-tools-$ANDROID_BUILD_TOOLS
+  - android-$ANDROID_API
+  - android-$EMULATOR_API
+  - sys-img-armeabi-v7a-google_apis-$ANDROID_API
+  - sys-img-armeabi-v7a-google_apis-$EMULATOR_API
+  - add-on
+  - extra
+  licenses:
+  - android-sdk-preview-license-52d11cd2
+  - android-sdk-license-.+
+  - google-gdk-license-.+
+before_cache:
+- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+before_install:
+- mkdir -p $ANDROID_HOME/licenses
+- echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > $ANDROID_HOME/licenses/android-sdk-license
+- echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> $ANDROID_HOME/licenses/android-sdk-license
+- touch /home/travis/.android/repositories.cfg
+- openssl aes-256-cbc -K $encrypted_9f3a38db308d_key -iv $encrypted_9f3a38db308d_iv
+  -in app/keystore.tar.enc -out app/keystore.tar -d
+- tar xvf app/keystore.tar -C app
+install:
+- echo y | sdkmanager "ndk-bundle"
+- echo y | sdkmanager "cmake;3.6.4111459"
+- echo y | sdkmanager "lldb;3.1"
+before_script:
+script:
+- "./gradlew clean build -PdisablePreDex --continue --stacktrace --profile"
+- pandoc `ls -1rt build/reports/profile/profile-*.html | tail -n1` -t plain
+deploy:
+  provider: releases
+  file: app/build/outputs/apk/release/app-release.apk
+  skip_cleanup: true
+  on:
+    repo: Mavionics/flightData
+    tags: true
+    jdk: oraclejdk8
+  api-key:
+    secure: kn7lsjnZXllPIom4oPgRX7FQPlPmlNMNTQaP26qqqfxDN0eL9IyBFGdU460zvvtXWSHpHwrkNBOeXy9WE0RodC4vEUEb0jNNa76TgIJgaupB0BCdmXbFfDYksFw9YR16ggWax5Fn65QSkMAxjFZRi9erwLBT4rW9P0N5dI00+BGn4byAIMS1P5QoKyC/eupry6GT+J9QM+UtbK0RnLetX75Ac1D+GqclQ7Yteydzj4Ipb+6QqaGGwQcSXUbrnIMyUnJhll0SuYpS06DVZRCzyGgDz+6dbTGAd3jeJ7vle7rgbPYllQGbXpnIu813M8G9U9MlsMkiGIoQhMjw3vSiWBJNGB/CaYxOXAHjA0+smq2gIDt5NgVoO7ga86i0BKyf4Pzd6Jq1X2uPf2HlFBW3GkBQg3bMVdi/LWE1YqK85lNt0XVlmjrxLhR65FZWvSY5SCWlB9JbpSrJj0Y7dlK4ufuX9/h1ZXqi1f+m0iqMWvukjm1VdE5YeqNHHNHBwqZv2IvOUcg+vSgQnah1Xvquj+Yw3te6IX1aE/JEYLxendT7HY/qc6+s4h3ywXSqHLHiEc2uYuAK4QPsHB9Wzg7xO4pFxhK0zQa6gGQAPtoQAS5trP3eqiPiwVvMHBQJJTfj+M8Rjvqzdpbn4gSs9vfWHrYMFVDmc80lpQHa0Jpx9ss=
