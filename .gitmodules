@@ -1,3 +1,1 @@
-[submodule "secrets"]
-	path = secrets
-	url = git@github.com:owodunni/mavionics-secrets.git
+

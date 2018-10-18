@@ -3,11 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-<<<<<<< HEAD
-      <module fileurl="file://$PROJECT_DIR$/mavionics-flight-data.iml" filepath="$PROJECT_DIR$/mavionics-flight-data.iml" />
-=======
       <module fileurl="file://$PROJECT_DIR$/flightData.iml" filepath="$PROJECT_DIR$/flightData.iml" />
->>>>>>> master
     </modules>
   </component>
 </project>
