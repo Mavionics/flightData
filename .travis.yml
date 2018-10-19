@@ -73,7 +73,7 @@ matrix:
         provider: releases
         file: app/build/outputs/apk/release/app-release.apk
         skip_cleanup: true
-        github-token: $GITHUB_TOKEN
+        api-key: $GITHUB_TOKEN
         on:
           branch: master
           repo: Mavionics/flightData
@@ -94,8 +94,6 @@ matrix:
         skip_cleanup: true
         github-token: $GITHUB_TOKEN
         local_dir: site
-        api-key:
-          secure: "nvdw16yg06bXf7f8h0AiHxH4cGULCoxkuBRWcn+UwSP1pxQUrlFaZXQgCUhLVODxqk0VrZuQkkfPzZoVG/gqNlHms2Tr6UQ1Uet9HVB4kd2vGPfpicW8/0UvzCkBhAaIV5N/fhIDAHs5PRchyES5T/Mr/XSBsDYepI1GfWNh11sf1wxdjj1SnXtCm1sirJx3oZa0QN7c0uXPHnXsqP/eGYLxuXf5JNfD9oniKgkpLZfX2jNU5+mvKTX/Nv3uAnYN9hxZGdlhYOnrSTmL3bkV38tRpZaQNkQyHboaN41OSqgF1sCfarreeXaTQQthqX6wcVMLc35CaPtRjFkD5byCkaQkCS1HdPGMMTnzx4YYj3zq9MagTT/5yO69Km7GqTEucjrlokDDfUIqy9cmZxgYVKUisPyYSIh33H6q5TxlKMNTirllx4GhhTDCeFWOOHiVahSJrM9XZdt2aENGtl1y753rIbL2t5iAVHpKBgaEsxocc17U4+LuV7DSU21xdYsgyYm8L5Ko6kaBlfOKMzWOQKHvNX19vZ2twpvRfepsBEwf8PoxBc4xaONVvT/VxnmYGvVtGDncIHl2rGFIJOqrG2V+IaKWHpAWgxGmhYh2FeJKT7TiNs5m3NBDpcuzMhzKRwitN3908bGd3KiVsR6dh9P3HJz52YeT3vuFGB05g48="
         on:
           branch: master
           repo: Mavionics/flightData
