@@ -7,7 +7,7 @@ notifications:
 matrix:
   include:
     # Build App
-    - stage: build
+    - name: "Build app"
       language: android
       jdk: oraclejdk8
       env:
@@ -68,16 +68,6 @@ matrix:
       - "./gradlew clean build connectedCheck -PdisablePreDex
         --continue --stacktrace --profile"
       - pandoc `ls -1rt build/reports/profile/profile-*.html | tail -n1` -t plain
-
-      # Build mkdocs
-      language: python
-      install:
-      - pip install mkdocs
-      - pip install mkdocs-material
-      script:
-      - mkdocs build --verbose --clean --strict
-    
-    - stage: deploy
       deploy:
         # Deploy app
         provider: releases
@@ -90,7 +80,17 @@ matrix:
           tags: true
           jdk: oraclejdk8
 
-        # Deploy mkdocs
+      # Build mkdocs
+    - name: "Build mkdocs"
+      language: python
+      install:
+      - pip install mkdocs
+      - pip install mkdocs-material
+      script:
+      - mkdocs build --verbose --clean --strict
+
+      deploy:
+      # Deploy mkdocs
         provider: pages
         skip_cleanup: true
         github-token: $GITHUB_TOKEN
