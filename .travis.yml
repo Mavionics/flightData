@@ -77,7 +77,6 @@ matrix:
         on:
           branch: master
           repo: Mavionics/flightData
-          tags: true
           jdk: oraclejdk8
 
       # Build mkdocs
@@ -100,4 +99,3 @@ matrix:
         on:
           branch: master
           repo: Mavionics/flightData
-          tags: true
