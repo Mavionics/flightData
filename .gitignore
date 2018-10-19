@@ -3,6 +3,9 @@ keystore.jks
 keystore.properties
 keystore.tar
 
+# mkdocs
+/site
+
 # Built application files
 *.apk
 *.ap_
