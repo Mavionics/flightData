@@ -1,5 +1,6 @@
 package com.github.mavionics.fligt_data
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -182,6 +183,9 @@ class EmailPasswordActivity : BaseActivity(), View.OnClickListener {
             signedInButtons.visibility = View.VISIBLE
 
             verifyEmailButton.isEnabled = !user.isEmailVerified
+
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         } else {
             status.setText(R.string.signed_out)
             detail.text = null
