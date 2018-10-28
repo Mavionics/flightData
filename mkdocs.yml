@@ -1,7 +1,7 @@
 site_name: Mavionics flight data
 site_description: 'Mavionics documentation'
 site_author: 'Alexander Poole'
-#site_url: 'https://squidfunk.github.io/mkdocs-material/'
+site_url: 'https://Mavionics.github.io/flightData/'
 
 # Repository
 repo_name: 'mavionics/flightData'
