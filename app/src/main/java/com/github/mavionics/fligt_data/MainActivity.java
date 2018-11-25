@@ -18,18 +18,33 @@ package com.github.mavionics.fligt_data;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.github.mavionics.fligt_data.fragment.MyPostsFragment;
 import com.github.mavionics.fligt_data.fragment.MyTopPostsFragment;
+import com.github.mavionics.fligt_data.fragment.MyVehiclesFragment;
 import com.github.mavionics.fligt_data.fragment.RecentPostsFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class  MainActivity extends BaseActivity {
 
@@ -46,12 +61,12 @@ public class  MainActivity extends BaseActivity {
         // Create the adapter that will return a fragment for each section
         mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             private final Fragment[] mFragments = new Fragment[] {
-                    new RecentPostsFragment(),
+                    new MyVehiclesFragment(),
                     new MyPostsFragment(),
                     new MyTopPostsFragment(),
             };
             private final String[] mFragmentNames = new String[] {
-                    getString(R.string.heading_recent),
+                    getString(R.string.vehicles),
                     getString(R.string.heading_my_posts),
                     getString(R.string.heading_my_top_posts)
             };
@@ -81,6 +96,30 @@ public class  MainActivity extends BaseActivity {
                 startActivity(new Intent(MainActivity.this, NewPostActivity.class));
             }
         });
+
+        // Access a Cloud Firestore instance from your Activity
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Log.d(TAG, "Starting to collect ");
+
+        DocumentReference docRef = db.collection("vehicles").document("jR1GKJMHCXyX22x1VklE");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+
     }
 
     @Override
