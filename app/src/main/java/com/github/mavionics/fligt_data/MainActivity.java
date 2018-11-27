@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -40,11 +41,12 @@ import android.widget.Toast;
 
 import com.github.mavionics.fligt_data.fragment.MyPostsFragment;
 import com.github.mavionics.fligt_data.fragment.MyTopPostsFragment;
-import com.github.mavionics.fligt_data.fragment.MyVehiclesFragment;
+import com.github.mavionics.fligt_data.fragment.VehiclesListFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -52,6 +54,8 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.sql.Time;
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -72,7 +76,7 @@ public class MainActivity extends BaseActivity {
         // Create the adapter that will return a fragment for each section
         mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             private final Fragment[] mFragments = new Fragment[]{
-                    new MyVehiclesFragment(),
+                    new VehiclesListFragment(),
                     new MyPostsFragment(),
                     new MyTopPostsFragment(),
             };
@@ -134,8 +138,10 @@ public class MainActivity extends BaseActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
+
                                 Map<String, Object> vehicle = document.getData();
                                 vehicle.put("position", new GeoPoint(location.getLatitude(), location.getLongitude()));
+                                vehicle.put("timestamp", Timestamp.now());
                                 // Add a new document with a generated ID
                                 db.collection("vehicles").document(document.getId()).update(vehicle);
                             }
@@ -144,7 +150,6 @@ public class MainActivity extends BaseActivity {
                         }
                     }
                 });
-
     }
 
     @Override
