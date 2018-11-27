@@ -16,34 +16,53 @@
 
 package com.github.mavionics.fligt_data;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.github.mavionics.fligt_data.fragment.MyPostsFragment;
 import com.github.mavionics.fligt_data.fragment.MyTopPostsFragment;
 import com.github.mavionics.fligt_data.fragment.MyVehiclesFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class  MainActivity extends BaseActivity {
+import java.util.Map;
+import java.util.Objects;
+
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
 
     private FragmentPagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
+    private FirebaseFirestore db;
+    private Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,24 +71,27 @@ public class  MainActivity extends BaseActivity {
 
         // Create the adapter that will return a fragment for each section
         mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
-            private final Fragment[] mFragments = new Fragment[] {
+            private final Fragment[] mFragments = new Fragment[]{
                     new MyVehiclesFragment(),
                     new MyPostsFragment(),
                     new MyTopPostsFragment(),
             };
-            private final String[] mFragmentNames = new String[] {
+            private final String[] mFragmentNames = new String[]{
                     getString(R.string.vehicles),
                     getString(R.string.heading_my_posts),
                     getString(R.string.heading_my_top_posts)
             };
+
             @Override
             public Fragment getItem(int position) {
                 return mFragments[position];
             }
+
             @Override
             public int getCount() {
                 return mFragments.length;
             }
+
             @Override
             public CharSequence getPageTitle(int position) {
                 return mFragmentNames[position];
@@ -89,19 +111,33 @@ public class  MainActivity extends BaseActivity {
             }
         });
 
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            showPhoneStatePermission();
+            return;
+        }
+
+        location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+
         // Access a Cloud Firestore instance from your Activity
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         db.collection("vehicles")
-                .whereEqualTo("owner",FirebaseAuth.getInstance().getUid())
+                .whereEqualTo("owner",getUid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
+                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
+                                Map<String, Object> vehicle = document.getData();
+                                vehicle.put("position", new GeoPoint(location.getLatitude(), location.getLongitude()));
+                                // Add a new document with a generated ID
+                                db.collection("vehicles").document(document.getId()).update(vehicle);
                             }
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
@@ -129,5 +165,7 @@ public class  MainActivity extends BaseActivity {
             return super.onOptionsItemSelected(item);
         }
     }
+
+
 
 }
