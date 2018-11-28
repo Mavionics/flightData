@@ -39,8 +39,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.github.mavionics.fligt_data.fragment.MyPostsFragment;
-import com.github.mavionics.fligt_data.fragment.MyTopPostsFragment;
 import com.github.mavionics.fligt_data.fragment.VehiclesListFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -76,14 +74,10 @@ public class MainActivity extends BaseActivity {
         // Create the adapter that will return a fragment for each section
         mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             private final Fragment[] mFragments = new Fragment[]{
-                    new VehiclesListFragment(),
-                    new MyPostsFragment(),
-                    new MyTopPostsFragment(),
+                    new VehiclesListFragment()
             };
             private final String[] mFragmentNames = new String[]{
-                    getString(R.string.vehicles),
-                    getString(R.string.heading_my_posts),
-                    getString(R.string.heading_my_top_posts)
+                    getString(R.string.vehicles)
             };
 
             @Override
@@ -104,18 +98,8 @@ public class MainActivity extends BaseActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mPagerAdapter);
-        TabLayout tabLayout = findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
 
-        // Button launches NewPostActivity
-        findViewById(R.id.fabNewPost).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, NewPostActivity.class));
-            }
-        });
-
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        /*LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             showPhoneStatePermission();
@@ -149,7 +133,7 @@ public class MainActivity extends BaseActivity {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }
                     }
-                });
+                });*/
     }
 
     @Override

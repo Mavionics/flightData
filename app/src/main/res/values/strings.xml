@@ -100,4 +100,8 @@
     <string name="heading_my_top_posts">My Top Posts</string>
     <string name="vehicles">Vehicles</string>
 
+    <string name="title_activity_flight">FlightActivity</string>
+    <string name="dummy_button">FLY!</string>
+    <string name="dummy_content">TAKE OFF</string>
+
 </resources>

@@ -1,6 +1,5 @@
 package com.github.mavionics.fligt_data.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -10,10 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.github.mavionics.fligt_data.PostDetailActivity;
 import com.github.mavionics.fligt_data.R;
 import com.github.mavionics.fligt_data.models.Vehicles;
 import com.github.mavionics.fligt_data.viewholder.VehicleViewHolder;
@@ -40,13 +37,13 @@ public class VehiclesListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View rootView = inflater.inflate(R.layout.fragment_all_posts, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_all_vehicles, container, false);
 
         // [START create_database_reference]
         mDatabase = FirebaseFirestore.getInstance();
         // [END create_database_reference]
 
-        mRecycler = rootView.findViewById(R.id.messagesList);
+        mRecycler = rootView.findViewById(R.id.vehicleList);
         mRecycler.setHasFixedSize(true);
 
         return rootView;
@@ -73,33 +70,7 @@ public class VehiclesListFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull VehicleViewHolder viewHolder, int position, @NonNull Vehicles model) {
-                /*final DatabaseReference postRef = getRef(position);
-
-                // Set click listener for the whole post view
-                final String postKey = postRef.getKey();
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Launch PostDetailActivity
-                        Intent intent = new Intent(getActivity(), PostDetailActivity.class);
-                        intent.putExtra(PostDetailActivity.EXTRA_POST_KEY, postKey);
-                        startActivity(intent);
-                    }
-                });*/
-
-                // Bind Post to ViewHolder, setting OnClickListener for the star button
-                viewHolder.bindToPost(model, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View starView) {
-                        // Need to write to both places the post is stored
-                        //DatabaseReference globalPostRef = mDatabase.child("posts").child(postRef.getKey());
-                        //DatabaseReference userPostRef = mDatabase.child("user-posts").child(model.uid).child(postRef.getKey());
-
-                        // Run two transactions
-                        //onStarClicked(globalPostRef);
-                        //onStarClicked(userPostRef);
-                    }
-                });
+                viewHolder.bindToPost(model);
             }
 
             @Override
@@ -110,42 +81,6 @@ public class VehiclesListFragment extends Fragment {
         };
         mRecycler.setAdapter(mAdapter);
     }
-
-    // [START post_stars_transaction]
-    /*private void onStarClicked(DatabaseReference postRef) {
-        postRef.runTransaction(new Transaction.Handler() {
-            @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
-                Post p = mutableData.getValue(Post.class);
-                if (p == null) {
-                    return Transaction.success(mutableData);
-                }
-
-                if (p.stars.containsKey(getUid())) {
-                    // Unstar the post and remove self from stars
-                    p.starCount = p.starCount - 1;
-                    p.stars.remove(getUid());
-                } else {
-                    // Star the post and add self to stars
-                    p.starCount = p.starCount + 1;
-                    p.stars.put(getUid(), true);
-                }
-
-                // Set value and report transaction success
-                mutableData.setValue(p);
-                return Transaction.success(mutableData);
-            }
-
-            @Override
-            public void onComplete(DatabaseError databaseError, boolean b,
-                                   DataSnapshot dataSnapshot) {
-                // Transaction completed
-                Log.d(TAG, "postTransaction:onComplete:" + databaseError);
-            }
-        });
-    }*/
-    // [END post_stars_transaction]
-
 
     @Override
     public void onStart() {

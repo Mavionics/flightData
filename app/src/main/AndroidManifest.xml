@@ -3,14 +3,15 @@
     package="com.github.mavionics.fligt_data">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".SignInActivity"
+        <activity
+            android:name=".SignInActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -19,12 +20,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".MainActivity" />
-
-        <activity android:name=".NewPostActivity" />
-
-        <activity android:name=".PostDetailActivity" />
+        <activity
+            android:name=".FlightActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_flight"
+            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>
