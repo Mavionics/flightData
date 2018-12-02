@@ -18,6 +18,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class VehiclesListFragment extends Fragment {
 
     private static final String TAG = "PostListFragment";
@@ -27,8 +30,11 @@ public class VehiclesListFragment extends Fragment {
     // [END define_database_reference]
 
     private FirestoreRecyclerAdapter<Vehicles, VehicleViewHolder> mAdapter;
-    private RecyclerView mRecycler;
     private LinearLayoutManager mManager;
+
+    //@BindView(R.id.vehicleList) RecyclerView mRecycler;
+    private RecyclerView mRecycler;
+
 
     public VehiclesListFragment() {
     }
@@ -38,12 +44,9 @@ public class VehiclesListFragment extends Fragment {
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_all_vehicles, container, false);
-
-        // [START create_database_reference]
-        mDatabase = FirebaseFirestore.getInstance();
-        // [END create_database_reference]
-
+        ButterKnife.bind(getActivity(), rootView);
         mRecycler = rootView.findViewById(R.id.vehicleList);
+        mDatabase = FirebaseFirestore.getInstance();
         mRecycler.setHasFixedSize(true);
 
         return rootView;
@@ -52,6 +55,8 @@ public class VehiclesListFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+
 
         // Set up Layout Manager, reverse layout
         mManager = new LinearLayoutManager(getActivity());
