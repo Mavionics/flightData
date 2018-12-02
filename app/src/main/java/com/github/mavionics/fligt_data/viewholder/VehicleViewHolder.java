@@ -8,16 +8,17 @@ import android.widget.TextView;
 import com.github.mavionics.fligt_data.R;
 import com.github.mavionics.fligt_data.models.Vehicles;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class VehicleViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView nameView;
-    public LinearLayout vehicleItem;
+    @BindView(R.id.vehicleItem) LinearLayout vehicleItem;
+    @BindView(R.id.name) TextView nameView;
 
     public VehicleViewHolder(View itemView) {
         super(itemView);
-
-        nameView = itemView.findViewById(R.id.name);
-        vehicleItem = itemView.findViewById(R.id.vehicleItem);
+        ButterKnife.bind(this, itemView);
     }
 
     public void bindToPost(Vehicles vehicle) {
