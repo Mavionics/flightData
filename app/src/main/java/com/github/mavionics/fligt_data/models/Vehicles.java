@@ -25,5 +25,11 @@ public class Vehicles {
         this.timeStamp = timeStamp;
     }
 
+    @Override
+    public String toString() {
+        return "name: " + name +
+                " ,owner: " + owner +
+                " ,position: " + position;
+    }
 }
 // [END blog_user_class]

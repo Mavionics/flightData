@@ -86,7 +86,7 @@ public class VehiclesListFragment extends Fragment {
                 viewHolder.setOnClickListener(new VehicleViewHolder.ClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Toast.makeText(getActivity(), "Item clicked at " + position, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), mAdapter.getItem(position).toString(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

@@ -21,6 +21,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -57,6 +58,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
@@ -65,11 +68,13 @@ public class MainActivity extends BaseActivity {
     private ViewPager mViewPager;
     private FirebaseFirestore db;
     private Location location;
+    @Inject SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        InjectorClass.inject(this);
 
         // Create the adapter that will return a fragment for each section
         mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
