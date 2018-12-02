@@ -8,10 +8,10 @@ import com.google.firebase.firestore.GeoPoint;
 @IgnoreExtraProperties
 public class Vehicles {
 
-    public String name;
-    public String owner;
-    public GeoPoint position;
-    public Timestamp timeStamp;
+    private String name;
+    private String owner;
+    private GeoPoint position;
+    private Timestamp timeStamp;
 
     public Vehicles() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -30,6 +30,10 @@ public class Vehicles {
         return "name: " + name +
                 " ,owner: " + owner +
                 " ,position: " + position;
+    }
+
+    public String getName() {
+        return name;
     }
 }
 // [END blog_user_class]

@@ -1,9 +1,8 @@
 package com.github.mavionics.fligt_data
 
-import android.app.ProgressDialog
 import android.support.test.espresso.IdlingResource
 
-import com.github.mavionics.fligt_data.BaseActivity
+import com.github.mavionics.fligt_data.activities.BaseActivity
 import  com.github.mavionics.fligt_data.EmailPasswordActivity
 /**
  * Monitor Activity idle status by watching ProgressDialog.

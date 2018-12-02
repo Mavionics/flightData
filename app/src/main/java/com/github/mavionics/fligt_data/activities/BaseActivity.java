@@ -1,4 +1,4 @@
-package com.github.mavionics.fligt_data;
+package com.github.mavionics.fligt_data.activities;
 
 import android.Manifest;
 import android.app.AlertDialog;

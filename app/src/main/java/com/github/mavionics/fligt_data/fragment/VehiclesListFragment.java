@@ -1,10 +1,12 @@
 package com.github.mavionics.fligt_data.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.github.mavionics.fligt_data.R;
+import com.github.mavionics.fligt_data.activities.FlightActivity;
 import com.github.mavionics.fligt_data.models.Vehicles;
 import com.github.mavionics.fligt_data.viewholder.VehicleViewHolder;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,6 +24,8 @@ import com.google.firebase.firestore.Query;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class VehiclesListFragment extends Fragment {
 
@@ -33,7 +38,6 @@ public class VehiclesListFragment extends Fragment {
     private FirestoreRecyclerAdapter<Vehicles, VehicleViewHolder> mAdapter;
     private LinearLayoutManager mManager;
 
-    //@BindView(R.id.vehicleList) RecyclerView mRecycler;
     private RecyclerView mRecycler;
 
 
@@ -86,12 +90,17 @@ public class VehiclesListFragment extends Fragment {
                 viewHolder.setOnClickListener(new VehicleViewHolder.ClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Toast.makeText(getActivity(), mAdapter.getItem(position).toString(), Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Starting FlightActivity");
+                        Intent intent = new Intent(getActivity(), FlightActivity.class);
+                        String message = mAdapter.getItem(position).getName();
+
+                        intent.putExtra("VEHICLE_NAME", message);
+                        startActivity(intent);
                     }
 
                     @Override
                     public void onItemLongClick(View view, int position) {
-                        Toast.makeText(getActivity(), "Item long clicked at " + position, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), mAdapter.getItem(position).toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
                 return viewHolder;

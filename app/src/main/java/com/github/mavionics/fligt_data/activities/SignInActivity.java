@@ -1,4 +1,4 @@
-package com.github.mavionics.fligt_data;
+package com.github.mavionics.fligt_data.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.github.mavionics.fligt_data.R;
 import com.github.mavionics.fligt_data.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

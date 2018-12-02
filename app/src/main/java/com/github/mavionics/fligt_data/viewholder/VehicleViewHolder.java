@@ -39,7 +39,7 @@ public class VehicleViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindToPost(Vehicles vehicle) {
-        nameView.setText(vehicle.name);
+        nameView.setText(vehicle.getName());
     }
 
     //Interface to send callbacks...
