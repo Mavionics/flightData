@@ -14,6 +14,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
+import dagger.android.support.DaggerAppCompatActivity;
+
 
 public class BaseActivity extends AppCompatActivity {
 

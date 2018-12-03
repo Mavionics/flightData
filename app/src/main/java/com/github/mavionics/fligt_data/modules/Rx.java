@@ -26,12 +26,4 @@ public class Rx {
     @Provides @Singleton @Named(Rx.IO) Scheduler provideIoScheduler() {
         return Schedulers.io();
     }
-
-    @Provides @Singleton @Named(Rx.COMPUTATION) Scheduler provideComputationScheduler() {
-        return Schedulers.computation();
-    }
-
-    @Provides @Singleton @Named(Rx.TRAMPOLINE) Scheduler provideTrampolineScheduler() {
-        return Schedulers.trampoline();
-    }
 }
