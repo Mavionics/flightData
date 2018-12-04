@@ -52,7 +52,6 @@ matrix:
       - openssl aes-256-cbc -K $encrypted_9f3a38db308d_key -iv $encrypted_9f3a38db308d_iv
         -in app/keystore.tar.enc -out app/keystore.tar -d
       - tar xvf app/keystore.tar -C app
-      - ls app
       install:
       - echo y | sdkmanager "ndk-bundle"
       - echo y | sdkmanager "cmake;3.6.4111459"
