@@ -6,4 +6,43 @@
     android:layout_height="match_parent"
     tools:context=".activities.FlightActivity">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/vehicleName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/vehicle_name"
+            android:textAlignment="center"
+            android:textSize="30dp"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/vehicleLastUpdated"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/defaultTimestamp"
+            android:textAlignment="center"
+            android:textSize="15dp"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/vehiclePosition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/defaultPosition"
+            android:textAlignment="center"
+            android:textSize="15dp"/>
+
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
