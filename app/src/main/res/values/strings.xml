@@ -103,5 +103,8 @@
     <string name="title_activity_flight">FlightActivity</string>
     <string name="dummy_button">FLY!</string>
     <string name="dummy_content">TAKE OFF</string>
+    <string name="vehicle_name">Vehicle name</string>
+    <string name="defaultPosition">lat: 37.422, lon -122.084</string>
+    <string name="defaultTimestamp">Tue Dec 04 20:45:00 GMT+01:00 2018</string>
 
 </resources>

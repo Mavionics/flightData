@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.github.mavionics.fligt_data.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,18 +23,24 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class FlightActivity extends BaseActivity {
 
-    private FirebaseFirestore db;
-    private Location location;
+    private FirebaseFirestore mDatabase;
+    private Location mLocation;
     private String TAG = "FlightActivity";
-    private String vehicleName;
-    private LocationManager lm;
+    private String mVehicleName;
+    private LocationManager mLocationManager;
+    private GeoPoint mPosition;
+    private Timestamp mLastUpdated;
 
     // Init
     private Handler mHandler = new Handler();
@@ -46,21 +53,29 @@ public class FlightActivity extends BaseActivity {
         }
     };
 
+    @BindView(R.id.vehicleName) TextView mNameView;
+    @BindView(R.id.vehiclePosition) TextView mPositionView;
+    @BindView(R.id.vehicleLastUpdated) TextView mLastUpdatedView;
+    private DecimalFormat mDecimalFormat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flight);
+        ButterKnife.bind(this);
 
         Intent intent = getIntent();
-        vehicleName = intent.getStringExtra("VEHICLE_NAME");
+        mVehicleName = intent.getStringExtra("VEHICLE_NAME");
+        mNameView.setText(mVehicleName);
 
-        Log.d(TAG, "onCreate: vehicle name: " + vehicleName);
+        Log.d(TAG, "onCreate: vehicle name: " + mVehicleName);
 
-        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         // Update location every second
         mHandler.postDelayed(mRunnable, 1000);
+
+        mDecimalFormat = new DecimalFormat("#.000");
 
     }
 
@@ -80,10 +95,10 @@ public class FlightActivity extends BaseActivity {
             showPhoneStatePermission();
             return;
         }
-        location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        db = FirebaseFirestore.getInstance();
+        mLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        mDatabase = FirebaseFirestore.getInstance();
 
-        db.collection("vehicles")
+        mDatabase.collection("vehicles")
                 .whereEqualTo("owner",getUid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -93,13 +108,17 @@ public class FlightActivity extends BaseActivity {
                             for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
 
                                 Map<String, Object> vehicle = document.getData();
-                                if(vehicle.get("name").equals(vehicleName)){
-                                    vehicle.put("position", new GeoPoint(location.getLatitude(), location.getLongitude()));
-                                    vehicle.put("timestamp", Timestamp.now());
+                                if(vehicle.get("name").equals(mVehicleName)){
+                                    mPosition = new GeoPoint(mLocation.getLatitude(), mLocation.getLongitude());
+                                    mLastUpdated = Timestamp.now();
+                                    vehicle.put("position", mPosition);
+                                    vehicle.put("timestamp", mLastUpdated);
                                     // Add a new document with a generated ID
 
                                     Log.d(TAG, "Updating vehicle location: " + vehicle.toString());
-                                    db.collection("vehicles").document(document.getId()).update(vehicle);
+                                    mDatabase.collection("vehicles").document(document.getId()).update(vehicle);
+                                    mPositionView.setText(GeoToString(mPosition));
+                                    mLastUpdatedView.setText(mLastUpdated.toDate().toString());
                                 }
                             }
                         } else {
@@ -108,6 +127,9 @@ public class FlightActivity extends BaseActivity {
                     }
                 });
     }
-
+    private String GeoToString(GeoPoint position){
+        return "lat: " + mDecimalFormat.format(position.getLatitude()) +
+                ", lon: " + mDecimalFormat.format(position.getLongitude());
+    }
 
 }
