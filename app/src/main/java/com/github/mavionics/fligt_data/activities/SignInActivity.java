@@ -56,6 +56,7 @@ public class SignInActivity extends BaseActivity {
 
         // Check auth on Activity start
         if (mAuth.getCurrentUser() != null) {
+            showProgressDialog();
             onAuthSuccess(mAuth.getCurrentUser());
         }
     }
