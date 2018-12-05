@@ -106,5 +106,7 @@
     <string name="vehicle_name">Vehicle name</string>
     <string name="defaultPosition">lat: 37.422, lon -122.084</string>
     <string name="defaultTimestamp">Tue Dec 04 20:45:00 GMT+01:00 2018</string>
+    <string name="togglebutton">ToggleButton</string>
+    <string name="startFlight">FLY!</string>
 
 </resources>

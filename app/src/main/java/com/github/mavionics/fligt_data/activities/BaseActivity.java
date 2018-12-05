@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,26 +20,11 @@ import dagger.android.support.DaggerAppCompatActivity;
 
 public class BaseActivity extends AppCompatActivity {
 
-    private ProgressDialog mProgressDialog;
+
 
 
     private final int REQUEST_PERMISSION_FINE_LOCATION = 1;
-
-    public void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setMessage("Loading...");
-        }
-
-        mProgressDialog.show();
-    }
-
-    public void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
-    }
+    protected String TAG = "BaseActivity";
 
     public String getUid() {
         return Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
@@ -85,9 +71,14 @@ public class BaseActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         requestPermission(permission, permissionRequestCode);
+                        onPermissionRequested();
                     }
                 });
         builder.create().show();
+    }
+
+    protected void onPermissionRequested() {
+        Log.d(TAG, "onPermissionRequested: ");
     }
 
     private void requestPermission(String permissionName, int permissionRequestCode) {

@@ -1,5 +1,6 @@
 package com.github.mavionics.fligt_data.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,6 +31,7 @@ public class SignInActivity extends BaseActivity {
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
+    private ProgressDialog mProgressDialog;
 
     @BindView(R.id.fieldEmail) EditText mEmailField;
     @BindView(R.id.fieldPassword) EditText mPasswordField;
@@ -48,6 +50,28 @@ public class SignInActivity extends BaseActivity {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Loading...");
+        }
+
+        mProgressDialog.show();
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        mProgressDialog.dismiss();
     }
 
     @Override
