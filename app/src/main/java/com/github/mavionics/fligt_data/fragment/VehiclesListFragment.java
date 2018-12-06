@@ -1,8 +1,11 @@
 package com.github.mavionics.fligt_data.fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +19,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.github.mavionics.fligt_data.R;
 import com.github.mavionics.fligt_data.activities.FlightActivity;
+import com.github.mavionics.fligt_data.activities.MainActivity;
 import com.github.mavionics.fligt_data.models.Vehicles;
 import com.github.mavionics.fligt_data.viewholder.VehicleViewHolder;
 import com.google.firebase.auth.FirebaseAuth;
@@ -91,11 +95,21 @@ public class VehiclesListFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, int position) {
                         Log.d(TAG, "Starting FlightActivity");
-                        Intent intent = new Intent(getActivity(), FlightActivity.class);
-                        String message = mAdapter.getItem(position).getName();
 
-                        intent.putExtra("VEHICLE_NAME", message);
-                        startActivity(intent);
+                        if (ActivityCompat.checkSelfPermission(getActivity(),
+                                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                                ActivityCompat.checkSelfPermission(getActivity(),
+                                        Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                                        PackageManager.PERMISSION_GRANTED) {
+                            ((MainActivity) getActivity()).showPhoneStatePermission();
+                        }else {
+
+                            Intent intent = new Intent(getActivity(), FlightActivity.class);
+                            String message = mAdapter.getItem(position).getName();
+
+                            intent.putExtra("VEHICLE_NAME", message);
+                            startActivity(intent);
+                        }
                     }
 
                     @Override
