@@ -30,13 +30,13 @@ public class BaseActivity extends AppCompatActivity {
         return Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
     }
 
-    protected void showPhoneStatePermission() {
+    public void showPhoneStatePermission() {
         int permissionCheck = ContextCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
-                showExplanation("Permission Needed", "Rationale", Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_PERMISSION_FINE_LOCATION);
+                showExplanation("Permission Needed", "Location tracking will not work without this", Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_PERMISSION_FINE_LOCATION);
             } else {
                 requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_PERMISSION_FINE_LOCATION);
             }
@@ -71,14 +71,9 @@ public class BaseActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         requestPermission(permission, permissionRequestCode);
-                        onPermissionRequested();
                     }
                 });
         builder.create().show();
-    }
-
-    protected void onPermissionRequested() {
-        Log.d(TAG, "onPermissionRequested: ");
     }
 
     private void requestPermission(String permissionName, int permissionRequestCode) {

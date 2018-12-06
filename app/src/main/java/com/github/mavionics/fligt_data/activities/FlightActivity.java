@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -61,6 +62,7 @@ public class FlightActivity extends BaseActivity {
     @BindView(R.id.vehicleName) TextView mNameView;
     @BindView(R.id.vehiclePosition) TextView mPositionView;
     @BindView(R.id.vehicleLastUpdated) TextView mLastUpdatedView;
+    @BindString(R.string.emptyPosition) String mPositionNotFound;
 
     private DecimalFormat mDecimalFormat;
 
@@ -88,32 +90,28 @@ public class FlightActivity extends BaseActivity {
                 ActivityCompat.checkSelfPermission(this,
                         Manifest.permission.ACCESS_COARSE_LOCATION) !=
                         PackageManager.PERMISSION_GRANTED) {
-            showPhoneStatePermission();
+            Toast.makeText(this, "Location not found, please check permissions.",
+                    Toast.LENGTH_LONG).show();
+            finish();
         }else{
-            mLocation = getLastKnownLocation();
-
-            if(mLocation == null){
-                Log.d(TAG, "UpdateLocation: location null");
-                Toast.makeText(this, "Location not found, please check permissions.",
-                        Toast.LENGTH_LONG).show();
+            if (mHandler != null) {
+                // Update location every second
+                mHandler.postDelayed(mRunnable, 0);
             }
-                onPermissionRequested();
         }
     }
 
     @Override
-    protected void onPermissionRequested(){
-        if (mHandler != null) {
-            // Update location every second
-            mHandler.postDelayed(mRunnable, 0);
-        }
+    public void finish(){
+        super.finish();
+        Log.d(TAG, "finish: ");
+        mHandler = null;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         Log.d(TAG, "onPause: ");
-        mHandler = null;
         finish();
     }
 
@@ -124,6 +122,9 @@ public class FlightActivity extends BaseActivity {
                         Manifest.permission.ACCESS_COARSE_LOCATION) !=
                         PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "updateLocation: permission not granted");
+            Toast.makeText(this, "Location not found, please check permissions.",
+                    Toast.LENGTH_LONG).show();
+            finish();
             return null;
         }
         mLocationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
@@ -146,11 +147,6 @@ public class FlightActivity extends BaseActivity {
 
         mLocation = getLastKnownLocation();
 
-        if(mLocation == null){
-            Log.d(TAG, "UpdateLocation: location null");
-            return;
-        }
-
         mDatabase = FirebaseFirestore.getInstance();
 
         mDatabase.collection("vehicles")
@@ -163,19 +159,23 @@ public class FlightActivity extends BaseActivity {
                             for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
 
                                 Map<String, Object> vehicle = document.getData();
-                                if(vehicle.get("name").equals(mVehicleName)
-                                        && mLocation != null){
+                                if(vehicle.get("name").equals(mVehicleName)){
 
-                                    mPosition = new GeoPoint(mLocation.getLatitude(), mLocation.getLongitude());
+                                    if (mLocation != null) {
+                                        Log.d(TAG, "updateLocation: position not found");
+                                        mPosition = new GeoPoint(mLocation.getLatitude(), mLocation.getLongitude());
+                                        vehicle.put("position", mPosition);
+                                        mPositionView.setText(GeoToString(mPosition));
+                                    }else{
+                                        mPositionView.setText(mPositionNotFound);
+                                    }
+
                                     mLastUpdated = Timestamp.now();
-                                    vehicle.put("position", mPosition);
                                     vehicle.put("timestamp", mLastUpdated);
-                                    // Add a new document with a generated ID
+                                    mLastUpdatedView.setText(mLastUpdated.toDate().toString());
 
                                     Log.d(TAG, "Updating vehicle location: " + vehicle.toString());
                                     mDatabase.collection("vehicles").document(document.getId()).update(vehicle);
-                                    mPositionView.setText(GeoToString(mPosition));
-                                    mLastUpdatedView.setText(mLastUpdated.toDate().toString());
                                 }
                             }
                         } else {
