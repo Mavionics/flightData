@@ -50,6 +50,12 @@ public class SignInActivity extends BaseActivity {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
+
+        // Check auth on Activity start
+        /*if (mAuth.getCurrentUser() != null) {
+            showProgressDialog();
+            onAuthSuccess(mAuth.getCurrentUser());
+        }*/
     }
 
     public void hideProgressDialog() {
@@ -72,17 +78,6 @@ public class SignInActivity extends BaseActivity {
     public void onPause(){
         super.onPause();
         mProgressDialog.dismiss();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // Check auth on Activity start
-        if (mAuth.getCurrentUser() != null) {
-            showProgressDialog();
-            onAuthSuccess(mAuth.getCurrentUser());
-        }
     }
 
     private void signIn() {

@@ -109,5 +109,10 @@
     <string name="defaultTimestamp">Tue Dec 04 20:45:00 GMT+01:00 2018</string>
     <string name="togglebutton">ToggleButton</string>
     <string name="startFlight">FLY!</string>
+    <string name="login">Login</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="login_success">Success</string>
+    <string name="login_failed">Failure</string>
 
 </resources>
