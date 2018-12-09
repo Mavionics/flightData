@@ -31,7 +31,6 @@ public class SignInActivity extends BaseActivity {
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
-    private ProgressDialog mProgressDialog;
 
     @BindView(R.id.fieldEmail) EditText mEmailField;
     @BindView(R.id.fieldPassword) EditText mPasswordField;
@@ -50,34 +49,11 @@ public class SignInActivity extends BaseActivity {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
-
-        // Check auth on Activity start
-        /*if (mAuth.getCurrentUser() != null) {
-            showProgressDialog();
-            onAuthSuccess(mAuth.getCurrentUser());
-        }*/
-    }
-
-    public void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
-    }
-
-    public void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setMessage("Loading...");
-        }
-
-        mProgressDialog.show();
     }
 
     @Override
     public void onPause(){
         super.onPause();
-        mProgressDialog.dismiss();
     }
 
     private void signIn() {
@@ -100,8 +76,8 @@ public class SignInActivity extends BaseActivity {
                         if (task.isSuccessful()) {
                             onAuthSuccess(task.getResult().getUser());
                         } else {
-                            Toast.makeText(SignInActivity.this, "Sign In Failed",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignInActivity.this, R.string.SIGN_IN_FAILED,
+                                    Toast.LENGTH_LONG).show();
                         }
                     }
                 });

@@ -109,7 +109,7 @@ public class FlightActivity extends BaseActivity {
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause: ");
         finish();

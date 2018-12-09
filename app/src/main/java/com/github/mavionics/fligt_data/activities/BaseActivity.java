@@ -15,19 +15,25 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
-import dagger.android.support.DaggerAppCompatActivity;
-
 
 public class BaseActivity extends AppCompatActivity {
 
 
 
+    public ProgressDialog mProgressDialog;
 
     private final int REQUEST_PERMISSION_FINE_LOCATION = 1;
     protected String TAG = "BaseActivity";
 
     public String getUid() {
         return Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        if(mProgressDialog != null)
+            mProgressDialog.dismiss();
     }
 
     public void showPhoneStatePermission() {
@@ -43,6 +49,22 @@ public class BaseActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Permission (already) Granted!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setMessage("Loading...");
+        }
+
+        mProgressDialog.show();
     }
 
     @Override
