@@ -23,7 +23,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.MainActivity" />
-        <activity android:name=".activities.FlightActivity"/>
+        <activity
+            android:name=".activities.FlightActivity"
+            android:launchMode="singleTask"/>
+
+        <service
+            android:name=".services.FlightService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
