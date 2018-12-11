@@ -32,6 +32,8 @@ public class SignInActivity extends BaseActivity {
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
+    private boolean mFailedSignIn = false;
+
     @BindView(R.id.fieldEmail) EditText mEmailField;
     @BindView(R.id.fieldPassword) EditText mPasswordField;
     @BindView(R.id.buttonSignIn) Button mSignInButton;
@@ -66,6 +68,7 @@ public class SignInActivity extends BaseActivity {
         String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
 
+        mFailedSignIn = false;
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -78,6 +81,7 @@ public class SignInActivity extends BaseActivity {
                         } else {
                             Toast.makeText(SignInActivity.this, R.string.SIGN_IN_FAILED,
                                     Toast.LENGTH_LONG).show();
+                            mFailedSignIn = true;
                         }
                     }
                 });
@@ -116,5 +120,9 @@ public class SignInActivity extends BaseActivity {
         }
 
         return result;
+    }
+
+    public boolean hasFailedSignIn() {
+        return mFailedSignIn;
     }
 }
