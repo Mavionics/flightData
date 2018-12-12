@@ -58,6 +58,7 @@ public class FlightActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_flight);
         ButterKnife.bind(this);
 
@@ -95,7 +96,6 @@ public class FlightActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         Log.d(TAG, "onPause: ");
-        finish();
     }
 
 

@@ -28,7 +28,7 @@
         <activity android:name=".activities.MainActivity" />
         <activity
             android:name=".activities.FlightActivity"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTop"/>
 
         <service
             android:name=".services.FlightService"

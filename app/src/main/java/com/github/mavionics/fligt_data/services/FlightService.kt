@@ -48,25 +48,8 @@ class FlightService : Service() {
         if (intent?.getAction().equals(ACTION_STARTFOREGROUND)) {
             Log.i(TAG, "Received Start Foreground Intent " + ACTION_STARTFOREGROUND)
             val notificationIntent = Intent(this, FlightActivity::class.java)
-            notificationIntent.action = ACTION_MAIN
-            notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             val pendingIntent = PendingIntent.getActivity(this, 0,
                     notificationIntent, 0)
-
-            val previousIntent = Intent(this, FlightService::class.java)
-            previousIntent.action = ACTION_PREV
-            val ppreviousIntent = PendingIntent.getService(this, 0,
-                    previousIntent, 0)
-
-            val playIntent = Intent(this, FlightService::class.java)
-            playIntent.action = ACTION_PLAY
-            val pplayIntent = PendingIntent.getService(this, 0,
-                    playIntent, 0)
-
-            val nextIntent = Intent(this, FlightService::class.java)
-            nextIntent.action = ACTION_NEXT
-            val pnextIntent = PendingIntent.getService(this, 0,
-                    nextIntent, 0)
 
             //val icon = BitmapFactory.decodeResource(resources,
             //        R.drawable.ic_mavionics_logo)
