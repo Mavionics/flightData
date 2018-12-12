@@ -116,8 +116,9 @@
     <string name="NEXT_ACTION">com.github.flight_data-action.next</string>
     <string name="STARTFOREGROUND_ACTION">com.github.flight_data-action.startforeground</string>
     <string name="STOPFOREGROUND_ACTION">com.github.flight_data-action.stopforeground</string>
-    <string name="FOREGROUND_SERVICE_NOTIFICATION_ID">123378</string>
 
     <string name="default_notification_channel_id">default</string>
+    <string name="local_service_connected">Flight mode active</string>
+    <string name="local_service_disconnected">Flight ended</string>
 
 </resources>

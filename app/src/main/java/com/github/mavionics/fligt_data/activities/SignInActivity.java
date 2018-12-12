@@ -71,6 +71,7 @@ public class SignInActivity extends BaseActivity {
     @Override
     public void onPause(){
         super.onPause();
+        Log.d(TAG, "onPause: ");
         mProgressDialog.dismiss();
     }
 
@@ -80,7 +81,6 @@ public class SignInActivity extends BaseActivity {
 
         // Check auth on Activity start
         if (mAuth.getCurrentUser() != null) {
-            showProgressDialog();
             onAuthSuccess(mAuth.getCurrentUser());
         }
     }

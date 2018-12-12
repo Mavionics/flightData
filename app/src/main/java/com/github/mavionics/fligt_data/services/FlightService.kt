@@ -12,103 +12,94 @@ import android.content.Context.NOTIFICATION_SERVICE
 import android.support.v4.content.ContextCompat.getSystemService
 import android.app.NotificationManager
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.RingtoneManager
+import android.os.Binder
 import com.github.mavionics.fligt_data.activities.MainActivity
+import io.fabric.sdk.android.services.settings.IconRequest.build
+import android.widget.Toast
+import com.github.mavionics.fligt_data.services.FlightService.LocalBinder
+
+
+
+
+
+
 
 
 
 
 class FlightService : Service() {
 
+    // This is the object that receives interactions from clients.  See
+    // RemoteService for a more complete example.
+    private val mBinder = LocalBinder()
+
     override fun onBind(intent: Intent): IBinder {
-        TODO("Return the communication channel to the service.")
+        return mBinder;
     }
 
     private val TAG: String? = "FlightService"
+    private lateinit var mNM: NotificationManager
+    internal var mNOTIFICATION_ID: Int = 0
+
+    /**
+     * Class for clients to access.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with
+     * IPC.
+     */
+    inner class LocalBinder : Binder() {
+        fun getService() : FlightService {
+            return this@FlightService
+        }
+    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d(TAG, "onStartCommand")
 
-        Log.d(TAG, "onStartCommand, action: " + intent?.action.toString())
-
-        var NOTIFICATION_ID: String = getString(R.string.FOREGROUND_SERVICE_NOTIFICATION_ID)
-
-        var ACTION_STARTFOREGROUND: String = getString(R.string.STARTFOREGROUND_ACTION)
-
-        var ACTION_STOPFOREGROUND: String = getString(R.string.STOPFOREGROUND_ACTION)
-
-        var ACTION_MAIN: String = getString(R.string.MAIN_ACTION)
-
-        var ACTION_PREV: String = getString(R.string.PREV_ACTION)
-
-        var ACTION_NEXT: String = getString(R.string.NEXT_ACTION)
-
-        var ACTION_PLAY: String = getString(R.string.PLAY_ACTION)
-
-        //return super.onStartCommand(intent, flags, startId)
-        if (intent?.getAction().equals(ACTION_STARTFOREGROUND)) {
-            Log.i(TAG, "Received Start Foreground Intent " + ACTION_STARTFOREGROUND)
-            val notificationIntent = Intent(this, FlightActivity::class.java)
-            val pendingIntent = PendingIntent.getActivity(this, 0,
-                    notificationIntent, 0)
-
-            //val icon = BitmapFactory.decodeResource(resources,
-            //        R.drawable.ic_mavionics_logo)
-
-            /*val notification = NotificationCompat.Builder(this)
-                    .setContentTitle("Truiton Music Player")
-                    .setTicker("Truiton Music Player")
-                    .setContentText("My Music")
-                    //.setSmallIcon(R.drawable.ic_mavionics_logo)
-                    //.setLargeIcon(
-                     //       Bitmap.createScaledBitmap(icon, 128, 128, false))
-                    .setContentIntent(pendingIntent)
-                    .setOngoing(true)
-                    .addAction(android.R.drawable.ic_media_previous,
-                            "Previous", ppreviousIntent)
-                    .addAction(android.R.drawable.ic_media_play, "Play",
-                            pplayIntent)
-                    .addAction(android.R.drawable.ic_media_next, "Next",
-                            pnextIntent).build()*/
-
-            Log.d(TAG, NOTIFICATION_ID.toString())
-
-
-
-
-            val i = Intent(this, MainActivity::class.java)
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            val pi = PendingIntent.getActivity(this,
-                    0 /* Request code */,
-                    i,
-                    PendingIntent.FLAG_ONE_SHOT)
-
-            val sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
-            val builder = NotificationCompat.Builder(this,
-                    getString(R.string.default_notification_channel_id))
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("title")
-                    .setContentText("body")
-                    .setOngoing(true)
-                    .setContentIntent(pendingIntent)
-
-            startForeground(NOTIFICATION_ID.toInt(),
-                    builder.build())
-
-
-        } else if (intent?.getAction().equals(ACTION_PREV)) {
-            Log.i(TAG, "Clicked Previous")
-        } else if (intent?.getAction().equals(ACTION_PLAY)) {
-            Log.i(TAG, "Clicked Play")
-        } else if (intent?.getAction().equals(ACTION_NEXT)) {
-            Log.i(TAG, "Clicked Next")
-        } else if (intent?.getAction().equals(
-                        ACTION_STOPFOREGROUND)) {
-            Log.i(TAG, "Received Stop Foreground Intent")
-            stopForeground(true)
-            stopSelf()
-        }
+        mNOTIFICATION_ID = resources.getInteger(R.integer.FOREGROUND_SERVICE_NOTIFICATION_ID)
         return Service.START_STICKY
+    }
 
+
+
+    override fun onCreate() {
+        Log.d(TAG, "onCreate")
+        mNM = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // Display a notification about us starting.  We put an icon in the status bar.
+        showNotification()
+    }
+
+    override fun onDestroy() {
+        // Cancel the persistent notification.
+        mNM.cancel(mNOTIFICATION_ID)
+
+        // Tell the user we stopped.
+        Toast.makeText(this, "Flight finished", Toast.LENGTH_SHORT).show()
+    }
+
+    /**
+     * Show a notification while this service is running.
+     */
+    private fun showNotification() {
+        // The PendingIntent to launch our activity if the user selects this notification
+        val notificationIntent = Intent(this, FlightActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0,
+                notificationIntent, 0)
+
+        // Set the info for the views that show in the notification panel.
+        val builder = NotificationCompat.Builder(this,
+                getString(R.string.default_notification_channel_id))
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Mavionics")
+                .setContentText("Flight in progress")
+                .setOngoing(true)
+                .setSmallIcon(R.drawable.ic_mavionics_logo)
+                .setContentIntent(pendingIntent)
+
+        // Send the notification.
+        mNM.notify(mNOTIFICATION_ID, builder.build())
     }
 }

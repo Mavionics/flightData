@@ -20,6 +20,7 @@ import com.github.mavionics.fligt_data.R;
 import com.github.mavionics.fligt_data.services.FlightService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.api.LogDescriptor;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -84,6 +85,12 @@ public class FlightActivity extends BaseActivity {
             startIntent.setAction(mACTION_STARTFOREGROUND);
             startService(startIntent);
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d(TAG, "onResume: ");
     }
 
     @Override

@@ -16,18 +16,21 @@
 
 package com.github.mavionics.fligt_data.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.mavionics.fligt_data.MainApplication;
 import com.github.mavionics.fligt_data.R;
 import com.github.mavionics.fligt_data.fragment.VehiclesListFragment;
+import com.github.mavionics.fligt_data.services.FlightService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -43,6 +46,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: ");
         ((MainApplication) getApplication()).getApplicationComponent().inject(this);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -94,6 +98,17 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+    }
 
 
 }
