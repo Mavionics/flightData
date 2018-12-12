@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mavionics.fligt_data.R;
+import com.github.mavionics.fligt_data.services.FlightService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -47,24 +48,12 @@ public class FlightActivity extends BaseActivity {
     private GeoPoint mPosition;
     private Timestamp mLastUpdated;
 
-    // Init
-    private Handler mHandler = new Handler();
-    private Runnable mRunnable = new Runnable() {
-        @Override
-        public void run() {
-            updateLocation();
-            if(mHandler != null){
-                mHandler.postDelayed(this, 500);
-            }
-        }
-    };
 
     @BindView(R.id.vehicleName) TextView mNameView;
     @BindView(R.id.vehiclePosition) TextView mPositionView;
     @BindView(R.id.vehicleLastUpdated) TextView mLastUpdatedView;
     @BindString(R.string.emptyPosition) String mPositionNotFound;
-
-    private DecimalFormat mDecimalFormat;
+    @BindString(R.string.STARTFOREGROUND_ACTION) String mACTION_STARTFOREGROUND;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +70,6 @@ public class FlightActivity extends BaseActivity {
         Log.d(TAG, "onCreate: vehicle name: " + mVehicleName);
 
 
-        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        mDecimalFormat = new DecimalFormat("#.000");
-
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this,
@@ -94,10 +79,9 @@ public class FlightActivity extends BaseActivity {
                     Toast.LENGTH_LONG).show();
             finish();
         }else{
-            if (mHandler != null) {
-                // Update location every second
-                mHandler.postDelayed(mRunnable, 0);
-            }
+            Intent startIntent = new Intent(FlightActivity.this, FlightService.class);
+            startIntent.setAction(mACTION_STARTFOREGROUND);
+            startService(startIntent);
         }
     }
 
@@ -105,7 +89,6 @@ public class FlightActivity extends BaseActivity {
     public void finish(){
         super.finish();
         Log.d(TAG, "finish: ");
-        mHandler = null;
     }
 
     @Override
@@ -115,78 +98,5 @@ public class FlightActivity extends BaseActivity {
         finish();
     }
 
-    private Location getLastKnownLocation() {
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                        PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "updateLocation: permission not granted");
-            Toast.makeText(this, "Location not found, please check permissions.",
-                    Toast.LENGTH_LONG).show();
-            finish();
-            return null;
-        }
-        mLocationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
-        List<String> providers = mLocationManager.getProviders(true);
-        Location bestLocation = null;
-        for (String provider : providers) {
-            Location l = mLocationManager.getLastKnownLocation(provider);
-            if (l == null) {
-                continue;
-            }
-            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                // Found best last known location: %s", l);
-                bestLocation = l;
-            }
-        }
-        return bestLocation;
-    }
-
-    private void updateLocation(){
-
-        mLocation = getLastKnownLocation();
-
-        mDatabase = FirebaseFirestore.getInstance();
-
-        mDatabase.collection("vehicles")
-                .whereEqualTo("owner",getUid())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-
-                                Map<String, Object> vehicle = document.getData();
-                                if(vehicle.get("name").equals(mVehicleName)){
-
-                                    if (mLocation != null) {
-                                        Log.d(TAG, "updateLocation: position not found");
-                                        mPosition = new GeoPoint(mLocation.getLatitude(), mLocation.getLongitude());
-                                        vehicle.put("position", mPosition);
-                                        mPositionView.setText(GeoToString(mPosition));
-                                    }else{
-                                        mPositionView.setText(mPositionNotFound);
-                                    }
-
-                                    mLastUpdated = Timestamp.now();
-                                    vehicle.put("timestamp", mLastUpdated);
-                                    mLastUpdatedView.setText(mLastUpdated.toDate().toString());
-
-                                    Log.d(TAG, "Updating vehicle location: " + vehicle.toString());
-                                    mDatabase.collection("vehicles").document(document.getId()).update(vehicle);
-                                }
-                            }
-                        } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
-                        }
-                    }
-                });
-    }
-    private String GeoToString(GeoPoint position){
-        return "lat: " + mDecimalFormat.format(position.getLatitude()) +
-                ", lon: " + mDecimalFormat.format(position.getLongitude());
-    }
 
 }

@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <meta-data
+        android:name="com.github.mavionics.fligt_data.default_notification_channel_id"
+        android:value="@string/default_notification_channel_id" />
 
     <application
         android:name=".MainApplication"

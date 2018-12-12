@@ -110,4 +110,14 @@
     <string name="togglebutton">ToggleButton</string>
     <string name="startFlight">FLY!</string>
 
+    <string name="MAIN_ACTION">com.github.flight_data-action.main</string>
+    <string name="PREV_ACTION">com.github.flight_data-action.prev</string>
+    <string name="PLAY_ACTION">com.github.flight_data-action.play</string>
+    <string name="NEXT_ACTION">com.github.flight_data-action.next</string>
+    <string name="STARTFOREGROUND_ACTION">com.github.flight_data-action.startforeground</string>
+    <string name="STOPFOREGROUND_ACTION">com.github.flight_data-action.stopforeground</string>
+    <string name="FOREGROUND_SERVICE_NOTIFICATION_ID">123378</string>
+
+    <string name="default_notification_channel_id">default</string>
+
 </resources>

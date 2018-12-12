@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="FOREGROUND_SERVICE_NOTIFICATION_ID">123378</integer>
+</resources>
