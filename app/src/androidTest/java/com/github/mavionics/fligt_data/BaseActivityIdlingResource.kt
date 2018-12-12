@@ -3,7 +3,8 @@ package com.github.mavionics.fligt_data
 import android.support.test.espresso.IdlingResource
 
 import com.github.mavionics.fligt_data.activities.BaseActivity
-import  com.github.mavionics.fligt_data.EmailPasswordActivity
+import com.github.mavionics.fligt_data.activities.SignInActivity
+
 /**
  * Monitor Activity idle status by watching ProgressDialog.
  */
@@ -12,7 +13,7 @@ class BaseActivityIdlingResource : IdlingResource {
     private var mActivity: BaseActivity? = null
     private var mCallback: IdlingResource.ResourceCallback? = null
 
-    constructor(activity: EmailPasswordActivity) {
+    constructor(activity: SignInActivity) {
         mActivity = activity
     }
 
@@ -21,7 +22,7 @@ class BaseActivityIdlingResource : IdlingResource {
     }
 
     override fun isIdleNow(): Boolean {
-        val dialog = mActivity!!.progressDialog
+        val dialog = mActivity!!.mProgressDialog
         val idle = dialog == null || !dialog!!.isShowing()
 
         if (mCallback != null && idle) {

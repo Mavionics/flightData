@@ -31,7 +31,8 @@ public class SignInActivity extends BaseActivity {
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
-    private ProgressDialog mProgressDialog;
+
+    private boolean mFailedSignIn = false;
 
     @BindView(R.id.fieldEmail) EditText mEmailField;
     @BindView(R.id.fieldPassword) EditText mPasswordField;
@@ -52,37 +53,9 @@ public class SignInActivity extends BaseActivity {
         mAuth = FirebaseAuth.getInstance();
     }
 
-    public void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
-    }
-
-    public void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setMessage("Loading...");
-        }
-
-        mProgressDialog.show();
-    }
-
     @Override
     public void onPause(){
         super.onPause();
-        mProgressDialog.dismiss();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // Check auth on Activity start
-        if (mAuth.getCurrentUser() != null) {
-            showProgressDialog();
-            onAuthSuccess(mAuth.getCurrentUser());
-        }
     }
 
     private void signIn() {
@@ -95,6 +68,7 @@ public class SignInActivity extends BaseActivity {
         String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
 
+        mFailedSignIn = false;
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -105,8 +79,9 @@ public class SignInActivity extends BaseActivity {
                         if (task.isSuccessful()) {
                             onAuthSuccess(task.getResult().getUser());
                         } else {
-                            Toast.makeText(SignInActivity.this, "Sign In Failed",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignInActivity.this, R.string.SIGN_IN_FAILED,
+                                    Toast.LENGTH_LONG).show();
+                            mFailedSignIn = true;
                         }
                     }
                 });
@@ -145,5 +120,9 @@ public class SignInActivity extends BaseActivity {
         }
 
         return result;
+    }
+
+    public boolean hasFailedSignIn() {
+        return mFailedSignIn;
     }
 }
