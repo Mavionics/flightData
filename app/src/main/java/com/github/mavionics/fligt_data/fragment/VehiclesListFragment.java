@@ -15,11 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.github.mavionics.fligt_data.R;
 import com.github.mavionics.fligt_data.activities.FlightActivity;
 import com.github.mavionics.fligt_data.activities.MainActivity;
+import com.github.mavionics.fligt_data.firestore.FirestoreRecyclerAdapter;
 import com.github.mavionics.fligt_data.models.Vehicles;
 import com.github.mavionics.fligt_data.viewholder.VehicleViewHolder;
 import com.google.firebase.auth.FirebaseAuth;
@@ -84,6 +84,9 @@ public class VehiclesListFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull VehicleViewHolder viewHolder, int position, @NonNull Vehicles model) {
+
+                Log.d(TAG, "onBindViewHolder: id" + mSnapshots.getSnapshot(position).getId());
+                model.setUuid(mSnapshots.getSnapshot(position).getId());
                 viewHolder.bindToPost(model);
             }
 
@@ -103,11 +106,10 @@ public class VehiclesListFragment extends Fragment {
                                         PackageManager.PERMISSION_GRANTED) {
                             ((MainActivity) getActivity()).showPhoneStatePermission();
                         }else {
-
                             Intent intent = new Intent(getActivity(), FlightActivity.class);
-                            String message = mAdapter.getItem(position).getName();
+                            String uuid = mAdapter.getItem(position).getUuid();
 
-                            intent.putExtra("VEHICLE_NAME", message);
+                            intent.putExtra(getString(R.string.Firebase_Vehicle_UUID), uuid);
                             startActivity(intent);
                         }
                     }

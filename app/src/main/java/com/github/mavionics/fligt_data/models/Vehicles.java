@@ -8,6 +8,7 @@ import com.google.firebase.firestore.GeoPoint;
 @IgnoreExtraProperties
 public class Vehicles {
 
+    private String uuid;
     private String name;
     private String owner;
     private GeoPoint position;
@@ -34,6 +35,14 @@ public class Vehicles {
 
     public String getName() {
         return name;
+    }
+
+    public void setUuid(String uuid){
+        this.uuid = uuid;
+    }
+
+    public String getUuid(){
+        return uuid;
     }
 }
 // [END blog_user_class]

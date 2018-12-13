@@ -42,7 +42,7 @@ public class FlightActivity extends BaseActivity {
     private FirebaseFirestore mDatabase;
     private Location mLocation;
     private String TAG = "FlightActivity";
-    private String mVehicleName;
+    private String mVehicleUuid;
     private LocationManager mLocationManager;
     private GeoPoint mPosition;
     private Timestamp mLastUpdated;
@@ -63,6 +63,7 @@ public class FlightActivity extends BaseActivity {
     @BindView(R.id.vehiclePosition) TextView mPositionView;
     @BindView(R.id.vehicleLastUpdated) TextView mLastUpdatedView;
     @BindString(R.string.emptyPosition) String mPositionNotFound;
+    @BindString(R.string.Firebase_Vehicle_UUID) String mFIREBASE_VEHICLE_UUID;
 
     private DecimalFormat mDecimalFormat;
 
@@ -73,12 +74,12 @@ public class FlightActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
-        mVehicleName = intent.getStringExtra("VEHICLE_NAME");
-        mNameView.setText(mVehicleName);
+        mVehicleUuid = intent.getStringExtra(mFIREBASE_VEHICLE_UUID);
+        //mNameView.setText(mVehicleName);
         mPositionView.setText("");
         mLastUpdatedView.setText("");
 
-        Log.d(TAG, "onCreate: vehicle name: " + mVehicleName);
+        Log.d(TAG, "onCreate: vehicle uuid: " + mVehicleUuid);
 
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -157,10 +158,9 @@ public class FlightActivity extends BaseActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-
+                                if(document.getId() == mVehicleUuid){
                                 Map<String, Object> vehicle = document.getData();
-                                if(vehicle.get("name").equals(mVehicleName)){
-
+                                    mNameView.setText(Objects.requireNonNull(vehicle.get("name")).toString());
                                     if (mLocation != null) {
                                         Log.d(TAG, "updateLocation: position not found");
                                         mPosition = new GeoPoint(mLocation.getLatitude(), mLocation.getLongitude());
