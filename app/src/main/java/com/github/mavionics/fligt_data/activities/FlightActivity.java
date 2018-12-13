@@ -70,7 +70,7 @@ public class FlightActivity extends BaseActivity {
 
 
         mDatabase.collection("calls")
-                .whereEqualTo("vehicleID", mVehicleUuid)
+                .whereEqualTo("vehicleId", mVehicleUuid)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -95,6 +95,7 @@ public class FlightActivity extends BaseActivity {
     @BindView(R.id.vehicleLastUpdated) TextView mLastUpdatedView;
     @BindString(R.string.emptyPosition) String mPositionNotFound;
     @BindString(R.string.Firebase_Vehicle_UUID) String mFIREBASE_VEHICLE_UUID;
+    @BindString(R.string.Firebase_Vehicle_Name) String mFIREBASE_VEHICLE_NAME;
 
     private DecimalFormat mDecimalFormat;
     private FlightStatus mStatus = FlightStatus.offline;
@@ -107,7 +108,8 @@ public class FlightActivity extends BaseActivity {
 
         Intent intent = getIntent();
         mVehicleUuid = intent.getStringExtra(mFIREBASE_VEHICLE_UUID);
-        //mNameView.setText(mVehicleName);
+        String name = intent.getStringExtra(mFIREBASE_VEHICLE_NAME);
+        mNameView.setText(name);
         mPositionView.setText("");
         mLastUpdatedView.setText("");
 

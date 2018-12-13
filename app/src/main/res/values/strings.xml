@@ -116,5 +116,6 @@
     <string name="login_failed">Failure</string>
     <string name="SIGN_IN_FAILED">Sign In Failed</string>
     <string name="Firebase_Vehicle_UUID">VEHICLE_UUID</string>
+    <string name="Firebase_Vehicle_Name">FIREBASE_VEHICLE_NAME</string>
 
 </resources>

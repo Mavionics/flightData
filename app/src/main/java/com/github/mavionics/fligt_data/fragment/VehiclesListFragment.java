@@ -108,7 +108,8 @@ public class VehiclesListFragment extends Fragment {
                         }else {
                             Intent intent = new Intent(getActivity(), FlightActivity.class);
                             String uuid = mAdapter.getItem(position).getUuid();
-
+                            intent.putExtra(getString(R.string.Firebase_Vehicle_Name),
+                                    mAdapter.getItem(position).getName());
                             intent.putExtra(getString(R.string.Firebase_Vehicle_UUID), uuid);
                             startActivity(intent);
                         }
